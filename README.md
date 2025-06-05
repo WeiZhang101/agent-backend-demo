@@ -158,7 +158,6 @@ docker-compose up
 如有问题或建议，请通过以下方式联系：
 
 - 项目Issues: [GitHub Issues](../../issues)
-- 邮箱: [your-email@example.com]
 
 ---
 
