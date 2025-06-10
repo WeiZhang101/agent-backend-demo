@@ -74,16 +74,12 @@ direction TB
 2. **Exception Types**:
     - **Resource Conflict**: [EntityName]AlreadyExistsException (409 Conflict)
         - Used when attempting to create a resource that already exists
-        - Example: "智能体名称已存在: 智能客服助手"
     - **Validation Errors**: Invalid[AttributeName]Exception (400 Bad Request)
         - Used for invalid attribute values or format violations
-        - Example: "无效的分类: 无效分类"
     - **Business Rule Violations**: Invalid[BusinessRule]Exception (400 Bad Request)
         - Used when business logic constraints are violated
-        - Example: "无效的可见范围"
     - **Resource Not Found**: [EntityName]NotFoundException (404 Not Found)
         - Used when requested resource cannot be found
-        - Example: "智能体不存在: agent-id-123"
 
 3. **Global Exception Handler**:
     - Use @RestControllerAdvice annotation
@@ -91,18 +87,7 @@ direction TB
     - Map specific exceptions to appropriate HTTP status codes
     - Include fallback handler for unexpected exceptions
 
-4. **Error Response Format**:
-    ```json
-    {
-        "timestamp": "2024-01-01T10:00:00",
-        "status": 409,
-        "error": "Conflict",
-        "code": "AGENT_ALREADY_EXISTS",
-        "message": "智能体名称已存在: 智能客服助手"
-    }
-    ```
-
-5. **Exception Usage in Service Layer**:
+4. **Exception Usage in Service Layer**:
     - Validate business rules and throw appropriate exceptions
     - Use descriptive error messages that help users understand the issue
     - Throw exceptions early to fail fast
