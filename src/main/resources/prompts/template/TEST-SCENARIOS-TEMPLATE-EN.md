@@ -87,8 +87,10 @@
 ## 6. Integration Test Scenarios
 ### Create `[ControllerIntegrationTestClassName]` class
 1. Create `[ControllerIntegrationTestClassName]` class
-2. Create test scenarios for `[ControllerClassName]` based on the prompts below
-3. Generate test code for each test scenario
+2. Use @SpringBootTest annotation to test the `[ControllerClassName]` class
+3. Use @AutoConfigureMockMvc annotation to mock the `[ControllerClassName]` class
+4. Create test scenarios for `[ControllerClassName]` based on the prompts below
+5. Generate test code for each test scenario
 
 #### `[testMethodName]`
 - Description: `[Test description]`
