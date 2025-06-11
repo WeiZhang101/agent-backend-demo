@@ -1,0 +1,34 @@
+tasks.register('installGitHooks') {
+    description = 'Install git hooks'
+    group = 'git hooks'
+    
+    doLast {
+        def gitHooksDir = file('.git/hooks')
+        if (!gitHooksDir.exists()) {
+            gitHooksDir.mkdirs()
+        }
+        
+        def prePushSource = file('gradle/githooks/pre-push')
+        def prePushTarget = file('.git/hooks/pre-push')
+        
+        if (prePushSource.exists()) {
+            prePushTarget.text = prePushSource.text
+            
+            // Make the hook executable on Unix-like systems
+            if (!System.getProperty('os.name').toLowerCase().contains('windows')) {
+                exec {
+                    commandLine 'chmod', '+x', prePushTarget.absolutePath
+                }
+            }
+            
+            logger.info("Git pre-push hook installed successfully")
+        } else {
+            logger.warn("Pre-push hook source file not found: ${prePushSource.absolutePath}")
+        }
+    }
+}
+
+// Ensure installGitHooks runs before compileJava
+tasks.named('compileJava').configure {
+    dependsOn 'installGitHooks'
+} 

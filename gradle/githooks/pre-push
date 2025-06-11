@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Git pre-push hook
+# This hook runs before pushing code to remote repository
+# It executes clean build and test to ensure code quality
+
+echo "Running pre-push checks..."
+
+# Execute gradle clean build test
+./gradlew clean build test
+
+# Check if the command was successful
+if [ $? -ne 0 ]; then
+    echo "Pre-push checks failed. Push aborted."
+    exit 1
+fi
+
+echo "Pre-push checks passed. Proceeding with push."
+exit 0 
