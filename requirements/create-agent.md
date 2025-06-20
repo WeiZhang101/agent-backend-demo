@@ -1,126 +1,127 @@
-## 背景
-AIFSD Agent平台需要支持“智能体（Agent）”的创建，用于管理和调用不同来源的智能服务（如大语言模型、语音模型、图像模型等）。后端需提供一个 API，接收前端传入的字段信息，对数据进行校验、存储，并返回创建结果。
+## Background
+The AIFSD Agent platform needs to support the creation of "Agents" for managing and invoking intelligent services from different sources (such as large language models, voice models, image models, etc.). The backend needs to provide an API that receives field information from the frontend, validates and stores the data, and returns the creation result.
 
-## 业务价值
-1. **快速部署**：产品团队和业务线可以通过统一接口快速创建和管理各类智能体，提升开发效率和质量。
-2. **权限管控**：通过“可见范围”字段，确保智能体的使用范围可控，满足组织内部和个人级别的访问需求。
-3. **统一管理**：将智能体元数据信息集中存储，方便后续的统计、审核和维护；支持与前端展示和调用端的“智能体目录”功能打通。
+## Business Value
+1. **Rapid Deployment**: Product teams and business lines can quickly create and manage various types of agents through a unified interface, improving development efficiency and quality.
+2. **Access Control**: Through the "visibility scope" field, ensure that agent usage scope is controllable, meeting organizational and personal-level access requirements.
+3. **Unified Management**: Centrally store agent metadata for subsequent statistics, auditing, and maintenance; support integration with frontend display and calling-end "agent directory" functionality.
 
 ## Scope In
-* 设计并实现 POST /api/agents （或等效路径）接口，用于新建智能体。
-* 接收并校验以下字段：
-  * 来源（枚举：fastgpt 或 hand，必填）
-  * 智能体名称（字符串 ≤50 字符，必填，后台需校验唯一性）
-  * 标签（可选，下拉；默认支持“大语言模型、语音模型、图像模型”）
-  * 图标（可选，Url）
-  * 描述（字符串 ≤500 字符，必填）
-  * 分类（必填，下拉关联后台已配置的一级分类，如“智能助手、效率工具”）
-  * 目标系统URL（必填，格式校验：必须以 http:// 或 https:// 开头）
-  * 可见范围（必填，支持按组织或人员选择；默认“全员可见”）
-* 返回格式：成功时返回 HTTP 201 及新建对象的详细信息；失败时返回相应的错误码和错误信息。
-* 后端需对如下场景进行校验并返回清晰错误：
-  1. 必填字段未传；
-  2. 字段长度超过限制；
-  3. 枚举值不在允许范围内；
-  4. URL 格式不合法；
-  5. 智能体名称已经存在；
-  6. 可见范围参数无效或不存在对应的组织/人员。
+* Design and implement POST /api/agents (or equivalent path) endpoint for creating new agents.
+* Receive and validate the following fields:
+  * Source (enum: fastgpt or hand, required)
+  * Agent Name (string ≤50 characters, required, backend needs to validate uniqueness)
+  * Tags (optional, dropdown; default support for "Large Language Model, Voice Model, Image Model")
+  * Icon (optional, URL)
+  * Description (string ≤500 characters, required)
+  * Category (required, dropdown linked to backend-configured primary categories, such as "Intelligent Assistant, Productivity Tools")
+  * Target System URL (required, format validation: must start with http:// or https://)
+  * Visibility Scope (required, support selection by organization or personnel; default "visible to all")
+* Return format: Return HTTP 201 with detailed information of the newly created object on success; return corresponding error codes and error messages on failure.
+* Backend needs to validate the following scenarios and return clear errors:
+  1. Required fields not provided;
+  2. Field length exceeds limits;
+  3. Enum values not within allowed range;
+  4. Invalid URL format;
+  5. Agent name already exists;
+  6. Invalid visibility scope parameters or non-existent corresponding organization/personnel.
 
 ## Scope Out
-* 不涉及智能体的更新、删除、查询列表等其他操作，仅限“创建”功能。
-* 不涉及前端实现和样式，仅关注后端接口及业务逻辑。
-* 不包括“标签”动态管理（后台配置已有），仅支持前端传入的枚举值或下拉选项。
-* 权限鉴权逻辑假设已在网关或上层中间件处理，后端只需使用上下文中的“当前用户”信息进行可见范围映射。
+* Does not involve other operations such as updating, deleting, or querying agent lists, limited to "creation" functionality only.
+* Does not involve frontend implementation and styling, only focuses on backend API and business logic.
+* Does not include dynamic management of "tags" (backend configuration already exists), only supports enum values or dropdown options passed from frontend.
+* Permission authentication logic is assumed to be handled in gateway or upper-layer middleware, backend only needs to use "current user" information in context for visibility scope mapping.
 
-## 验收准则（ACs）
-1. 校验“来源”字段——必填且枚举值有效
-   **Given** 请求中未包含 来源 或 来源 不在 [fastgpt, hand]
-   **When** 后端收到创建请求
-   **Then** 返回 HTTP 400，错误信息中提示 “来源 为必填，且只能是 fastgpt 或 hand”。
+## Acceptance Criteria (ACs)
+1. Validate "Source" field - required and enum value valid
+   **Given** request does not contain Source or Source is not in [fastgpt, hand]
+   **When** backend receives creation request
+   **Then** return HTTP 400, error message indicates "Source is required and must be either fastgpt or hand".
 
-2. 校验“智能体名称”字段——必填、长度 ≤ 50，且唯一
-   **Given** 请求中未包含 智能体名称
-   **When** 后端收到创建请求
-   **Then** 返回 HTTP 400，错误提示 “智能体名称 为必填”。
+2. Validate "Agent Name" field - required, length ≤ 50, and unique
+   **Given** request does not contain Agent Name
+   **When** backend receives creation request
+   **Then** return HTTP 400, error message "Agent Name is required".
 
-   **Given** 请求中包含 智能体名称 且长度 > 50
-   **When** 后端校验时发现长度超限
-   **Then** 返回 HTTP 400，错误提示 “智能体名称 长度不能超过 50 字符”。
+   **Given** request contains Agent Name with length > 50
+   **When** backend validation finds length exceeds limit
+   **Then** return HTTP 400, error message "Agent Name length cannot exceed 50 characters".
 
-   **Given** 请求中包含 智能体名称 且已在数据库中存在相同名称
-   **When** 后端校验发现重复
-   **Then** 返回 HTTP 409，错误提示 “智能体名称已存在，请使用其他名称”。
+   **Given** request contains Agent Name that already exists in database
+   **When** backend validation finds duplication
+   **Then** return HTTP 409, error message "Agent Name already exists, please use a different name".
 
-3. 校验“标签”字段——可选但若传则必须在可用列表中
-   **Given** 请求中包含 标签，但值不在允许范围（如“大语言模型、语音模型、图像模型”或后台新增的）**When** 后端校验标签时发现不匹配
-   **Then** 返回 HTTP 400，错误提示 “标签 值无效，请从下拉列表中选择”。
+3. Validate "Tags" field - optional but if provided must be in available list
+   **Given** request contains Tags, but value is not in allowed range (such as "Large Language Model, Voice Model, Image Model" or newly added in backend)
+   **When** backend validates tags and finds mismatch
+   **Then** return HTTP 400, error message "Tags value is invalid, please select from dropdown list".
 
-4. 校验“图标”字段——可选但若传则为Url格式
-   **Given** 请求中包含 图标 但Url格式不合法
-   **When** 后端校验图标Url格式
-   **Then** 返回 HTTP 400，错误提示 “图标 格式不合法，需以 http:// 或 https:// 开头”。
+4. Validate "Icon" field - optional but if provided must be URL format
+   **Given** request contains Icon but URL format is invalid
+   **When** backend validates icon URL format
+   **Then** return HTTP 400, error message "Icon format is invalid, must start with http:// or https://".
 
-5. 校验“描述”字段——必填且长度 ≤ 500
-   **Given** 请求中未包含 描述
-   **When** 后端收到创建请求
-   **Then** 返回 HTTP 400，错误提示 “描述 为必填，且不超过 500 字符”。
+5. Validate "Description" field - required and length ≤ 500
+   **Given** request does not contain Description
+   **When** backend receives creation request
+   **Then** return HTTP 400, error message "Description is required and cannot exceed 500 characters".
 
-   **Given** 请求中包含 描述 且长度 > 500
-   **When** 后端校验时发现长度超限
-   **Then** 返回 HTTP 400，错误提示 “描述 长度不能超过 500 字符”。
+   **Given** request contains Description with length > 500
+   **When** backend validation finds length exceeds limit
+   **Then** return HTTP 400, error message "Description length cannot exceed 500 characters".
 
-6. 校验“分类”字段——必填且需在后台已配置的一级分类列表中
-   **Given** 请求中未包含 分类
-   **When** 后端收到创建请求
-   **Then** 返回 HTTP 400，错误提示 “分类 为必填，请选择有效分类”。
+6. Validate "Category" field - required and must be in backend-configured primary category list
+   **Given** request does not contain Category
+   **When** backend receives creation request
+   **Then** return HTTP 400, error message "Category is required, please select a valid category".
 
-   **Given** 请求中包含 分类，但该分类不在后台已配置列表中
-   **When** 后端校验分类时发现无效
-   **Then** 返回 HTTP 400，错误提示 “分类 无效，请从后台已配置的分类中选择”。
+   **Given** request contains Category, but the category is not in backend-configured list
+   **When** backend validates category and finds invalid
+   **Then** return HTTP 400, error message "Category is invalid, please select from backend-configured categories".
 
-7. 校验“目标系统URL”字段——必填且格式合法
-   **Given** 请求中未包含 目标系统URL
-   **When** 后端收到创建请求
-   **Then** 返回 HTTP 400，错误提示 “目标系统URL 为必填”。
+7. Validate "Target System URL" field - required and format valid
+   **Given** request does not contain Target System URL
+   **When** backend receives creation request
+   **Then** return HTTP 400, error message "Target System URL is required".
 
-   **Given** 请求中包含 目标系统URL，但不以 http:// 或 https:// 开头
-   **When** 后端校验 URL 格式
-   **Then** 返回 HTTP 400，错误提示 “目标系统URL 格式不合法，需以 http:// 或 https:// 开头”。
+   **Given** request contains Target System URL, but does not start with http:// or https://
+   **When** backend validates URL format
+   **Then** return HTTP 400, error message "Target System URL format is invalid, must start with http:// or https://".
 
-8. 校验“可见范围”字段——必填且组织/人员存在
-   **Given** 请求中未包含 可见范围 或传入值为空
-   **When** 后端收到创建请求
-   **Then** 返回 HTTP 400，错误提示 “可见范围 为必填，请选择组织或人员”。
+8. Validate "Visibility Scope" field - required and organization/personnel exists
+   **Given** request does not contain Visibility Scope or passed value is empty
+   **When** backend receives creation request
+   **Then** return HTTP 400, error message "Visibility Scope is required, please select organization or personnel".
 
-   **Given** 请求中包含 可见范围，但所选组织/人员在系统中不存在或无权限
-   **When** 后端校验时发现无效或不存在
-   **Then** 返回 HTTP 400，错误提示 “可见范围 包含无效的组织/人员，请检查”。
+   **Given** request contains Visibility Scope, but selected organization/personnel does not exist in system or has no permission
+   **When** backend validation finds invalid or non-existent
+   **Then** return HTTP 400, error message "Visibility Scope contains invalid organization/personnel, please check".
 
-9. 创建成功返回结果
-   **Given** 请求中的所有字段均校验通过
-   **When** 后端持久化智能体信息
-   **Then** 返回 HTTP 201，响应体包含新建智能体的完整信息（含 ID、创建时间等），并返回如下 JSON 结构示例：
+9. Successful creation return result
+   **Given** all fields in request pass validation
+   **When** backend persists agent information
+   **Then** return HTTP 201, response body contains complete information of newly created agent (including ID, creation time, etc.), and return JSON structure example as follows:
    ```json
    {
      "id": "123e4567-e89b-12d3-a456-426614174000",
-     "来源": "fastgpt",
-     "智能体名称": "示例Agent",
-     "标签": ["大语言模型"],
-     "图标URL": "https://cdn.xuehua.ai/agents/icons/123e4567-e89b-12d3-a456-426614174000.png",
-     "描述": "这是一个用于演示的新建智能体",
-     "分类": "智能助手",
-     "目标系统URL": "https://api.xuehua.ai/agent/123",
-     "可见范围": {
-       "类型": "组织",
-       "值": ["研发部", "产品部"]
+     "source": "fastgpt",
+     "agentName": "Example Agent",
+     "tags": ["Large Language Model"],
+     "iconUrl": "https://cdn.xuehua.ai/agents/icons/123e4567-e89b-12d3-a456-426614174000.png",
+     "description": "This is a newly created agent for demonstration purposes",
+     "category": "Intelligent Assistant",
+     "targetSystemUrl": "https://api.xuehua.ai/agent/123",
+     "visibilityScope": {
+       "type": "organization",
+       "value": ["R&D Department", "Product Department"]
      },
-     "创建者": "wwdzhang",
-     "创建时间": "2025-06-05T08:30:00Z"
+     "creator": "wwdzhang",
+     "createdAt": "2025-06-05T08:30:00Z"
    }
    ```
-   可见范围 可包含“组织”或“人员”两种类型；创建者、创建时间 由后端自动填充。
+   Visibility Scope can include two types: "organization" or "personnel"; Creator and Created Time are automatically filled by backend.
 
-10. 异常场景通用返回
-    **Given** 后端在处理请求时发生数据库或文件存储等系统级异常
-    **When** 捕获到异常
-    **Then** 返回 HTTP 500，错误提示 “服务器内部错误，请稍后重试”。
+10. Exception scenario general return
+    **Given** backend encounters system-level exceptions such as database or file storage during request processing
+    **When** exception is caught
+    **Then** return HTTP 500, error message "Internal server error, please try again later". 

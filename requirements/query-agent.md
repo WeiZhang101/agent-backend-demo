@@ -1,83 +1,84 @@
 Background
-用户需要能够根据不同的筛选条件快速查找和浏览智能体，包括按名称搜索、按标签筛选、按分类查看等。系统应提供灵活的查询接口，支持多维度的筛选组合，帮助用户快速定位所需的智能体。
+Users need to be able to quickly find and browse intelligent agents based on different filtering criteria, including searching by name, filtering by tags, viewing by categories, etc. The system should provide flexible query interfaces that support multi-dimensional filtering combinations to help users quickly locate the required agents.
+
 ## Business Value
-* **提升查找效率**：用户可以快速通过多种条件组合查找特定智能体
-* **改善用户体验**：提供直观的筛选和搜索功能，降低使用门槛
-* **增强数据可见性**：通过分类和标签展示，帮助用户发现更多相关智能体
-* **支持业务决策**：为管理员提供智能体使用情况的数据支持
-* **优化资源利用**：避免重复创建相似功能的智能体
+* **Improve Search Efficiency**: Users can quickly find specific agents through various condition combinations
+* **Enhance User Experience**: Provide intuitive filtering and search functions to lower the usage threshold
+* **Enhance Data Visibility**: Help users discover more relevant agents through categorization and tag display
+* **Support Business Decisions**: Provide data support for administrators on agent usage statistics
+* **Optimize Resource Utilization**: Avoid duplicate creation of agents with similar functions
 
 ## Scope In
-* 基于智能体名称的模糊搜索
-* 按标签精确筛选
-* 按分类精确筛选
-* 多条件组合查询
-* 分页查询支持
-* 基础排序功能（按创建时间、名称）
-* 权限范围过滤（只返回当前用户可见的智能体）
-* 查询结果的标准化返回格式
+* Fuzzy search based on agent names
+* Exact filtering by tags
+* Exact filtering by categories
+* Multi-condition combined queries
+* Pagination query support
+* Basic sorting functions (by creation time, name)
+* Permission scope filtering (only return agents visible to current user)
+* Standardized return format for query results
 
 ## Scope Out
-* 高级搜索语法支持
-* 全文搜索功能
-* 智能体详细配置信息的返回
-* 复杂的多表关联查询
-* 搜索历史记录
-* 搜索结果的个性化推荐
-* 导出功能
+* Advanced search syntax support
+* Full-text search functionality
+* Returning detailed configuration information of agents
+* Complex multi-table join queries
+* Search history records
+* Personalized recommendations for search results
+* Export functionality
 
 ## Acceptance Criteria
-AC1: 智能体名称模糊搜索
-**Given** 用户提供智能体名称关键词
-**When** 调用查询API进行名称搜索
-**Then** 系统返回所有名称包含该关键词的智能体列表，支持中英文搜索，不区分大小写
+AC1: Agent Name Fuzzy Search
+**Given** user provides agent name keywords
+**When** calling query API for name search
+**Then** system returns list of all agents whose names contain the keywords, supporting Chinese and English search, case-insensitive
 
-AC2: 标签精确筛选
-**Given** 用户选择特定标签（大语言模型、语音模型、图像模型）
-**When** 调用查询API进行标签筛选
-**Then** 系统返回所有包含该标签的智能体列表
+AC2: Tag Exact Filtering
+**Given** user selects specific tags (Large Language Model, Voice Model, Image Model)
+**When** calling query API for tag filtering
+**Then** system returns list of all agents containing the specified tag
 
-AC3: 分类精确筛选
-**Given** 用户选择特定分类（智能助手、效率工具）
-**When** 调用查询API进行分类筛选
-**Then** 系统返回该分类下的所有智能体列表
+AC3: Category Exact Filtering
+**Given** user selects specific category (Intelligent Assistant, Productivity Tools)
+**When** calling query API for category filtering
+**Then** system returns list of all agents under the specified category
 
-AC4: 多条件组合查询
-**Given** 用户同时提供名称关键词、标签和分类条件
-**When** 调用查询API
-**Then** 系统返回同时满足所有条件的智能体列表（AND逻辑）
+AC4: Multi-condition Combined Query
+**Given** user provides name keywords, tags, and category conditions simultaneously
+**When** calling query API
+**Then** system returns list of agents that satisfy all conditions (AND logic)
 
-AC5: 分页查询支持
-**Given** 用户提供页码和每页数量参数
-**When** 调用查询API
-**Then** 系统返回指定页面的智能体数据，包含总记录数、总页数等分页信息
+AC5: Pagination Query Support
+**Given** user provides page number and page size parameters
+**When** calling query API
+**Then** system returns agent data for the specified page, including pagination information such as total records and total pages
 
-AC6: 权限范围过滤
-**Given** 当前登录用户调用查询API
-**When** 系统处理查询请求
-**Then** 只返回该用户有权限查看的智能体，自动过滤无权限访问的智能体
+AC6: Permission Scope Filtering
+**Given** current logged-in user calls query API
+**When** system processes the query request
+**Then** only return agents that the user has permission to view, automatically filtering agents without access permission
 
-AC7: 空查询条件处理
-**Given** 用户不提供任何筛选条件
-**When** 调用查询API
-**Then** 系统返回当前用户可见的所有智能体列表，按创建时间倒序排列
+AC7: Empty Query Condition Handling
+**Given** user provides no filtering conditions
+**When** calling query API
+**Then** system returns list of all agents visible to current user, sorted by creation time in descending order
 
-AC8: 无匹配结果处理
-**Given** 用户提供的查询条件
-**When** 系统中没有匹配的智能体
-**Then** 系统返回空列表，状态码200，包含正确的分页信息（总数为0）
+AC8: No Matching Results Handling
+**Given** user-provided query conditions
+**When** no matching agents exist in the system
+**Then** system returns empty list with status code 200, including correct pagination information (total count is 0)
 
-AC9: 排序功能支持
-**Given** 用户指定排序字段（创建时间、智能体名称）和排序方向
-**When** 调用查询API
-**Then** 系统按指定规则对结果进行排序并返回
+AC9: Sorting Function Support
+**Given** user specifies sorting field (creation time, agent name) and sorting direction
+**When** calling query API
+**Then** system sorts results according to specified rules and returns them
 
-AC10: 查询参数验证
-**Given** 用户提供无效的查询参数（如负数页码、超大每页数量）
-**When** 调用查询API
-**Then** 系统返回400错误，提示参数验证失败的具体信息
+AC10: Query Parameter Validation
+**Given** user provides invalid query parameters (such as negative page numbers, oversized page size)
+**When** calling query API
+**Then** system returns 400 error with specific information about parameter validation failure
 
-AC11: 返回字段标准化
-**Given** 查询成功执行
-**When** 系统返回智能体列表
-**Then** 每个智能体包含标准字段：ID、名称、标签、分类、图标、描述、创建时间，但不包含敏感信息如目标系统URL
+AC11: Return Field Standardization
+**Given** query executes successfully
+**When** system returns agent list
+**Then** each agent contains standard fields: ID, name, tags, category, icon, description, creation time, but excludes sensitive information such as target system URLs 
