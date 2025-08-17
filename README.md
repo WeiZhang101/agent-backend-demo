@@ -1,164 +1,210 @@
 # Agent Backend Demo
 
-一个基于Spring Boot的后端演示项目，展示了现代Java Web应用程序的最佳实践。
+A Spring Boot-based backend demonstration project showcasing best practices for modern Java web applications.
 
-## 📋 项目概述
+## 📋 Project Overview
 
-这是一个使用Spring Boot 3.5.0构建的后端API演示项目，集成了JPA数据访问、PostgreSQL数据库、Flyway数据库迁移等现代化技术栈。
+This is a backend API demonstration project built with Spring Boot 3.5.0, integrating modern technology stacks such as JPA data access, PostgreSQL database, and Flyway database migration.
 
-## 🛠 技术栈
+## 🛠 Technology Stack
 
 - **Java**: 21
 - **Spring Boot**: 3.5.0
-- **数据库**: PostgreSQL (生产环境) / H2 (测试环境)
+- **Database**: PostgreSQL (Production) / H2 (Testing)
 - **ORM**: Spring Data JPA
-- **数据库迁移**: Flyway
-- **构建工具**: Gradle 8.13
-- **容器化**: Docker Compose
-- **开发工具**: Lombok
+- **Database Migration**: Flyway
+- **Build Tool**: Gradle 8.13
+- **Containerization**: Docker Compose
+- **Development Tools**: Lombok
 
-## 📋 环境要求
+## 📋 Prerequisites
 
-在开始之前，请确保您的开发环境满足以下要求：
+Before getting started, ensure your development environment meets the following requirements:
 
-- **Java**: JDK 21 或更高版本
-- **Docker**: 用于运行PostgreSQL数据库
-- **Git**: 用于克隆项目
+- **Java**: JDK 21 or higher
+- **Docker**: For running PostgreSQL database
+- **Git**: For cloning the project
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 1. 克隆项目
+### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:WeiZhang101/agent-backend-demo.git
 cd agent-backend-demo
+git checkout aupro-workshop
 ```
 
-### 2. 启动数据库
+### 2. Database Initialization
 
-使用Docker Compose启动PostgreSQL数据库：
+Start PostgreSQL database using Docker Compose:
 
 ```bash
-docker-compose up -d
+docker-compose -f compose.yaml up -d
 ```
 
-这将启动一个PostgreSQL容器，配置如下：
-- 数据库名: `agent-backend`
-- 用户名: `postgres`
-- 密码: `postgres`
-- 端口: `5432`
+This will start a PostgreSQL container with the following configuration:
+- Database name: `agent-backend`
+- Username: `postgres`
+- Password: `postgres`
+- Port: `5432`
 
-### 3. 构建项目
+### 3. Create Package Structure
+
+Create the project package structure:
+- Create controller package
+- Create dto package
+- ..., etc.
+
+### 4. Check out the story in the requirement folder
+- **Background**: Context and rationale
+- **Business Value**: Expected benefits and impact  
+- **Scope In**: What will be included
+- **Scope Out**: What will be excluded
+- **Acceptance Criteria (ACs)**: Using Given-When-Then format, with each AC having a descriptive subheading
+
+### 5. Configuration File Generation
+
+Generate configuration files based on prompts (e.g., `@0000-202502252021-[Init]-[Feat]-Set-up-database.md`)
+
+### 6. API Creation Prompt Generation
+
+Based on business context and the "API Creation" in the src/main/resources/prompts/template, generate prompt files in the `@/prompts implementation` folder using `@create-agent.md`
+
+### 7. Field Type Fine-tuning
+
+Update models with corresponding properties, adjusting the implementation prompt accordingly
+
+### 8. Package Information Updates
+
+Based on current package structure, update corresponding package information in implementation prompts
+
+### 9. Database Migration (Optional)
+
+Generate DB migration prompts based on EntityPO and `@DB-MIGRATION-TEMPLATE.md` in the `@/implementation` folder
+
+### 10. Code Generation
+
+Follow implementation prompts to generate corresponding code in existing package structure (excluding tests). When fixing lint issues, maintain the original implementation approach.
+
+### 11. Test Prompt Generation
+
+Based on implementation details, generate test prompt files using the "Test Generation" workflow in Aupro
+
+### 12. Test Code Generation
+
+Generate corresponding test code based on the generated test prompts
+
+### 13. Project Verification
+
+Run the project and verify all scenarios work correctly
+
+### 14. Build and Run Application
 
 ```bash
 ./gradlew build
-```
-
-### 4. 运行应用程序
-
-```bash
 ./gradlew bootRun
 ```
 
-应用程序将在 `http://localhost:8080` 启动。
+The application will start at `http://localhost:8080`.
 
-## 🔧 开发指南
+## 🔧 Development Guide
 
-### 项目结构
+### Project Structure
 
 ```
 src/
 ├── main/
 │   ├── java/
 │   │   └── org/tw/agent_backend_demo/
-│   │       └── AgentBackendDemoApplication.java  # 主应用程序类
+│   │       └── AgentBackendDemoApplication.java  # Main application class
 │   └── resources/
-│       ├── application.properties                # 应用配置
-│       ├── db/migration/                        # Flyway数据库迁移脚本
-│       ├── static/                              # 静态资源
-│       └── templates/                           # 模板文件
+│       ├── application.properties                # Application configuration
+│       ├── db/migration/                        # Flyway database migration scripts
+│       ├── static/                              # Static resources
+│       └── templates/                           # Template files
 └── test/
-    └── java/                                    # 测试代码
+    └── java/                                    # Test code
 ```
 
-### 数据库配置
+### Database Configuration
 
-项目支持两种数据库配置：
+The project supports two database configurations:
 
-1. **开发环境**: PostgreSQL (通过Docker Compose)
-2. **测试环境**: H2内存数据库
+1. **Development Environment**: PostgreSQL (via Docker Compose)
+2. **Testing Environment**: H2 in-memory database
 
-### 添加数据库迁移
+### Adding Database Migration
 
-在 `src/main/resources/db/migration/` 目录下创建Flyway迁移脚本：
+Create Flyway migration scripts in the `src/main/resources/db/migration/` directory:
 
 ```
 V1__Create_initial_tables.sql
 V2__Add_user_table.sql
 ```
 
-### 运行测试
+### Running Tests
 
 ```bash
 ./gradlew test
 ```
 
-## 🐳 Docker部署
+## 🐳 Docker Deployment
 
-### 构建Docker镜像
+### Build Docker Image
 
 ```bash
 ./gradlew bootBuildImage
 ```
 
-### 使用Docker Compose部署
+### Deploy with Docker Compose
 
 ```bash
 docker-compose up
 ```
 
-## 📝 API文档
+## 📝 API Documentation
 
-应用程序启动后，您可以通过以下方式访问API：
+After starting the application, you can access the API through:
 
-- 应用程序: `http://localhost:8080`
-- 健康检查: `http://localhost:8080/actuator/health` (如果启用了Actuator)
+- Application: `http://localhost:8080`
+- Health Check: `http://localhost:8080/actuator/health` (if Actuator is enabled)
 
-## 🔍 常见问题
+## 🔍 Troubleshooting
 
-### 数据库连接问题
+### Database Connection Issues
 
-如果遇到数据库连接问题，请检查：
+If you encounter database connection problems, please check:
 
-1. Docker容器是否正在运行：`docker ps`
-2. PostgreSQL端口是否被占用：`lsof -i :5432`
-3. 数据库配置是否正确
+1. Whether Docker containers are running: `docker ps`
+2. Whether PostgreSQL port is occupied: `lsof -i :5432`
+3. Whether database configuration is correct
 
-### 构建失败
+### Build Failures
 
-如果构建失败，请尝试：
+If the build fails, try:
 
-1. 清理构建缓存：`./gradlew clean`
-2. 重新构建：`./gradlew build --refresh-dependencies`
+1. Clean build cache: `./gradlew clean`
+2. Rebuild: `./gradlew build --refresh-dependencies`
 
-## 🤝 贡献指南
+## 🤝 Contributing
 
-1. Fork 项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开Pull Request
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 许可证
+## 📄 License
 
-本项目采用 [MIT许可证](LICENSE)。
+This project is licensed under the [MIT License](LICENSE).
 
-## 📞 联系方式
+## 📞 Contact
 
-如有问题或建议，请通过以下方式联系：
+For questions or suggestions, please contact us through:
 
-- 项目Issues: [GitHub Issues](../../issues)
+- Project Issues: [GitHub Issues](../../issues)
 
 ---
 
-**注意**: 这是一个演示项目，仅用于学习和开发参考。在生产环境中使用前，请确保进行适当的安全配置和性能优化。 
+**Note**: This is a demonstration project for learning and development reference only. Please ensure appropriate security configuration and performance optimization before using in production environment. 
