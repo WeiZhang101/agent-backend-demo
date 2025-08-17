@@ -32,7 +32,7 @@ Before getting started, ensure your development environment meets the following 
 ```bash
 git clone git@github.com:WeiZhang101/agent-backend-demo.git
 cd agent-backend-demo
-git checkout aupro-workshop
+git checkout spdd-practice
 ```
 
 ### 2. Database Initialization
@@ -69,7 +69,7 @@ Generate configuration files based on prompts (e.g., `@0000-202502252021-[Init]-
 
 ### 6. API Creation Prompt Generation
 
-Based on business context and the "API Creation" in the src/main/resources/prompts/template, generate prompt files in the `@/prompts implementation` folder using `@create-agent.md`
+Based on business context and the "API-CREATION-TEMPLATE.md" in the src/main/resources/prompts/template, generate prompt files in the `@/prompts implementation` folder using `@create-agent.md`
 
 ### 7. Field Type Fine-tuning
 
@@ -89,7 +89,7 @@ Follow implementation prompts to generate corresponding code in existing package
 
 ### 11. Test Prompt Generation
 
-Based on implementation details, generate test prompt files using the "Test Generation" workflow in Aupro
+Based on implementation details, generate test prompt files using the "TEST-SCENARIOS-TEMPLATE-EN.md" in src/main/resources/prompts/template
 
 ### 12. Test Code Generation
 
