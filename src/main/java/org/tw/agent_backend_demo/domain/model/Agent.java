@@ -116,4 +116,15 @@ public class Agent {
                 .createdAt(this.createdAt)
                 .build();
     }
+    
+    /**
+     * Initializes system fields for the agent.
+     * Encapsulates the logic for setting creator and creation timestamp.
+     * 
+     * @param creator the user or system creating the agent
+     */
+    public void initializeSystemFields(String creator) {
+        this.creator = creator;
+        this.createdAt = LocalDateTime.now();
+    }
 }

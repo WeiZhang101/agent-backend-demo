@@ -161,9 +161,8 @@ InvalidUrlFormatException --> ErrorResponse : maps to
 8. InvalidUrlFormatException extends AgentBusinessException class (URL format error exception)
 
 ### Dependencies
-1. AgentController calls AgentService
-2. AgentService depends on AgentRepository and ValidationService
-3. AgentController injects AgentService and RequestValidator
+1. AgentController depends on AgentService
+2. AgentService depends on AgentRepository
 
 ### Layered Architecture
 1. Controller Layer: HTTP request processing, parameter validation, response formatting
@@ -195,6 +194,9 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - toCreateAgentResponse(): CreateAgentResponse
      - Logic: Convert Agent business model to CreateAgentResponse DTO
      - Returns: CreateAgentResponse object for API response
+   - initializeSystemFields(String creator): void
+     - Logic: Encapsulate initialization of system fields (creator, createdAt) within the domain object
+     - Parameters: creator - the user/system creating the agent
 4. Annotations:
    - @Data (Lombok for getters/setters)
    - @Builder (Lombok for builder pattern)
@@ -282,32 +284,32 @@ InvalidUrlFormatException --> ErrorResponse : maps to
 1. Interface definition:
    - createAgent(CreateAgentRequest request): CreateAgentResponse
 2. Core method: createAgent(CreateAgentRequest request): CreateAgentResponse
-   - Input validation:
-     - Check Agent name uniqueness
-     - Validate visibility scope validity
-   - Business logic:
-     - Covert request to Agent model
-     - do validation
-     - Covert Agent to AgentPO entity object
-     - Set system fields (creator, createdAt)
-     - Call agentRepository to save the entity
-     - Convert to response object and return
-   - Exception handling:
-     - Catch and convert database exceptions
-     - Throw corresponding business exceptions
+   - Responsibilities: Define the contract for agent creation
+   - Parameters: CreateAgentRequest - validated request containing agent data
    - Return value: CreateAgentResponse object containing complete Agent information
-3. Dependency injection: AgentRepository, ValidationService
-4. Transaction management: @Transactional annotation ensures data consistency
 
 ### Implement Service Implementation Class - AgentServiceImpl
 1. Responsibilities: Implement specific business logic for AgentService interface
 2. Method implementation:
-   - Concrete implementation of createAgent method
-   - Private methods: validateAgentName, validateVisibilityScope, etc.
+   - Concrete implementation of createAgent method with all business logic and validation
+   - Input validation:
+     - Check Agent name uniqueness using repository
+     - Validate visibility scope validity using domain object methods
+   - Business logic:
+     - Convert request to Agent domain model
+     - Use Agent.initializeSystemFields() to set creator and createdAt
+     - Convert Agent to AgentPO entity object
+     - Call agentRepository to save the entity
+     - Convert saved entity back to response object and return
+   - Exception handling approach:
+     - Only catch DataIntegrityViolationException to convert to AgentNameExistsException if needed
+     - Rely on GlobalExceptionHandler for all other exception handling
+     - Remove unnecessary try-catch blocks to simplify code
+   - Private helper methods: validateAgentNameUniqueness,validateVisibilityScope
 3. Annotations:
    - @Service
    - @Transactional
-   - @Autowired for dependency injection
+   - @RequiredArgsConstructor for dependency injection (constructor-based)
 
 ### Create Controller - AgentController
 1. Responsibilities: Handle HTTP requests for Agent creation
@@ -449,6 +451,7 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - Use Bean Validation for parameter validation
    - Custom validators handle complex business rules
    - Perform business logic validation at the Service layer
+   - Domain objects should handle their own state initialization and validation
    - Set constraints at the database level to ensure data integrity
 
 5. Logging:
