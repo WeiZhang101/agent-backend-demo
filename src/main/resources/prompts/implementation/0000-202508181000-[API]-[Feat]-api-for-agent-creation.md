@@ -75,7 +75,6 @@ class CreateAgentResponse {
     +VisibilityScope visibilityScope
     +String creator
     +LocalDateTime createdAt
-    +fromAgent()
 }
 
 class AgentBusinessException {
@@ -286,11 +285,7 @@ InvalidUrlFormatException --> ErrorResponse : maps to
 2. Properties:
    - Contains all Agent field information
    - Includes system-generated id, creator, createdAt fields
-3. Methods:
-   - fromAgent(Agent agent): CreateAgentResponse
-     - Logic: Convert Agent business model to response DTO
-     - Returns: Complete response object
-4. Annotations:
+3. Annotations:
    - @Data (Lombok for getters/setters)
    - @Builder (Lombok for builder pattern)
    - @AllArgsConstructor, @NoArgsConstructor (Lombok for constructors)

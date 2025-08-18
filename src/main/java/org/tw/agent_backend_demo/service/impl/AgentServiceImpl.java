@@ -10,6 +10,7 @@ import org.tw.agent_backend_demo.domain.model.VisibilityScope;
 import org.tw.agent_backend_demo.dto.CreateAgentRequest;
 import org.tw.agent_backend_demo.dto.CreateAgentResponse;
 import org.tw.agent_backend_demo.exception.AgentNameExistsException;
+import org.tw.agent_backend_demo.exception.InvalidVisibilityScopeException;
 import org.tw.agent_backend_demo.repository.AgentRepository;
 import org.tw.agent_backend_demo.service.AgentService;
 

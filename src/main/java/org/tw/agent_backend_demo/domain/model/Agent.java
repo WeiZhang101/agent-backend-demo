@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import org.tw.agent_backend_demo.dto.CreateAgentResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -80,8 +80,8 @@ public class Agent {
      * 
      * @return AgentPO object for database operations
      */
-    public org.tw.agent_backend_demo.domain.model.AgentPO toAgentPO() {
-        return org.tw.agent_backend_demo.domain.model.AgentPO.builder()
+    public AgentPO toAgentPO() {
+        return AgentPO.builder()
                 .id(this.id)
                 .source(this.source)
                 .agentName(this.agentName)
@@ -101,8 +101,8 @@ public class Agent {
      * 
      * @return CreateAgentResponse object for API response
      */
-    public org.tw.agent_backend_demo.dto.CreateAgentResponse toCreateAgentResponse() {
-        return org.tw.agent_backend_demo.dto.CreateAgentResponse.builder()
+    public CreateAgentResponse toCreateAgentResponse() {
+        return CreateAgentResponse.builder()
                 .id(this.id)
                 .source(this.source)
                 .agentName(this.agentName)

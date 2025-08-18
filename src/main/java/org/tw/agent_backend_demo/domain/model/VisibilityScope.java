@@ -1,18 +1,18 @@
 package org.tw.agent_backend_demo.domain.model;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.tw.agent_backend_demo.exception.InvalidVisibilityScopeException;
 
-
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
 import java.util.List;
 
 /**
@@ -49,11 +49,11 @@ public class VisibilityScope {
      */
     public void validateScope() {
         if (type == null) {
-            throw new org.tw.agent_backend_demo.exception.InvalidVisibilityScopeException("Visibility scope type cannot be null");
+            throw new InvalidVisibilityScopeException("Visibility scope type cannot be null");
         }
         
         if (values == null || values.isEmpty()) {
-            throw new org.tw.agent_backend_demo.exception.InvalidVisibilityScopeException("Visibility scope values cannot be empty");
+            throw new InvalidVisibilityScopeException("Visibility scope values cannot be empty");
         }
     }
 }
