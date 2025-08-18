@@ -20,7 +20,23 @@ class Agent {
     +VisibilityScope visibilityScope
     +String creator
     +LocalDateTime createdAt
-    +validateUniqueness()
+    +toAgentPO()
+    +toCreateAgentResponse()
+}
+
+class AgentPO {
+    +UUID id
+    +String source
+    +String agentName
+    +List~String~ tags
+    +String iconUrl
+    +String description
+    +String category
+    +String targetSystemUrl
+    +VisibilityScope visibilityScope
+    +String creator
+    +LocalDateTime createdAt
+    +toAgent()
 }
 
 class VisibilityScope {
@@ -38,6 +54,7 @@ class CreateAgentRequest {
     +String category
     +String targetSystemUrl
     +VisibilityScope visibilityScope
+    +toAgent()
 }
 
 class CreateAgentResponse {
@@ -90,7 +107,10 @@ class ErrorResponse {
 }
 
 Agent "1" -- "1" VisibilityScope : contains
-CreateAgentRequest --> Agent : creates
+AgentPO "1" -- "1" VisibilityScope : contains
+CreateAgentRequest --> Agent : converts to
+Agent --> AgentPO : converts to
+AgentPO --> Agent : converts to
 Agent --> CreateAgentResponse : maps to
 AgentBusinessException <|-- AgentNameExistsException : extends
 AgentBusinessException <|-- InvalidVisibilityScopeException : extends
@@ -118,7 +138,7 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - Use Spring Boot framework and Spring Data JPA for rapid development
 
 3. Data Validation Strategy:
-   - Use Bean Validation (JSR-303) for input parameter validation
+   - Use spring-boot-starter-validation for input parameter validation
    - Implement custom validators for business rule validation (name uniqueness, URL format, etc.)
    - Handle validation exceptions and business exceptions uniformly through GlobalExceptionHandler
    - Provide detailed error information and error codes for frontend processing
@@ -154,8 +174,8 @@ InvalidUrlFormatException --> ErrorResponse : maps to
 
 ## Tasks
 
-### Create Entity Class - Agent
-1. Responsibilities: Define Agent data model and business entity
+### Create Business Model - Agent
+1. Responsibilities: Define Agent business model and domain logic
 2. Properties:
    - id: UUID - Primary key identifier
    - source: String - Source type (fastgpt or hand), validated using enum
@@ -169,9 +189,42 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - creator: String - Creator, automatically populated by system
    - createdAt: LocalDateTime - Creation time, automatically populated by system
 3. Methods:
-   - validateUniqueness(): void
-     - Logic: Check if Agent name already exists in database
-     - Exception: Throw AgentNameExistsException if exists
+   - toAgentPO(): AgentPO
+     - Logic: Convert Agent business model to AgentPO persistence entity
+     - Returns: AgentPO object for database operations
+   - toCreateAgentResponse(): CreateAgentResponse
+     - Logic: Convert Agent business model to CreateAgentResponse DTO
+     - Returns: CreateAgentResponse object for API response
+4. Annotations:
+   - @Data (Lombok for getters/setters)
+   - @Builder (Lombok for builder pattern)
+   - @AllArgsConstructor, @NoArgsConstructor (Lombok for constructors)
+
+### Create Entity Class - AgentPO
+1. Responsibilities: Provide Agent persistence entity for database operations
+2. Properties:
+   - id: UUID - Primary key identifier
+   - source: String - Source type (fastgpt or hand)
+   - agentName: String - Agent name
+   - tags: List<String> - Tag list
+   - iconUrl: String - Icon URL
+   - description: String - Description information
+   - category: String - Category
+   - targetSystemUrl: String - Target system URL
+   - visibilityScope: VisibilityScope - Visibility scope
+   - creator: String - Creator, automatically populated by system
+   - createdAt: LocalDateTime - Creation time, automatically populated by system
+3. Methods:
+   - toAgent(): Agent
+     - Logic: Convert AgentPO persistence entity to Agent business model
+     - Returns: Agent object for business operations
+4. Annotations:
+   - @Entity, @Table(name = "agents")
+   - @Data (Lombok for getters/setters)
+   - @Builder (Lombok for builder pattern)
+   - @AllArgsConstructor, @NoArgsConstructor (Lombok for constructors)
+   - @Id, @GeneratedValue(strategy = GenerationType.AUTO)
+   - @Column(nullable = false, unique = true) for agentName
 
 ### Create Value Object - VisibilityScope
 1. Responsibilities: Encapsulate visibility scope configuration information
@@ -195,10 +248,13 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - targetSystemUrl: String - Target system URL, required
    - visibilityScope: VisibilityScope - Visibility scope, required
 3. Methods:
-   - validate(): void
-     - Logic: Perform basic parameter validation
-     - Exception: Throw ValidationException if parameters are invalid
+   - toAgent(): Agent
+     - Logic: Convert CreateAgentRequest to Agent business model
+     - Returns: Agent object with mapped properties
 4. Annotations:
+   - @Data (Lombok for getters/setters)
+   - @Builder (Lombok for builder pattern)
+   - @AllArgsConstructor, @NoArgsConstructor (Lombok for constructors)
    - @NotNull, @NotBlank for required fields
    - @Size(max = 50) for agentName
    - @Size(max = 500) for description
@@ -212,11 +268,15 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - Includes system-generated id, creator, createdAt fields
 3. Methods:
    - fromAgent(Agent agent): CreateAgentResponse
-     - Logic: Convert from Agent entity to response DTO
+     - Logic: Convert Agent business model to response DTO
      - Returns: Complete response object
 4. Annotations:
+   - @Data (Lombok for getters/setters)
+   - @Builder (Lombok for builder pattern)
+   - @AllArgsConstructor, @NoArgsConstructor (Lombok for constructors)
    - @JsonFormat for date formatting
    - @JsonProperty for field mapping
+     - Returns: Complete response object
 
 ### Implement Service Interface - AgentService
 1. Interface definition:
@@ -278,12 +338,14 @@ InvalidUrlFormatException --> ErrorResponse : maps to
 1. Responsibilities: Handle global exceptions uniformly, provide standardized error responses
 2. Exception types:
    - AgentBusinessException: Business logic exceptions
-   - ValidationException: Input validation exceptions
+   - MethodArgumentNotValidException: Spring validation exceptions
    - DataIntegrityViolationException: Data integrity exceptions
    - Exception: Unexpected system exceptions
 3. Methods:
    - handleAgentBusinessException(AgentBusinessException): ResponseEntity<ErrorResponse>
-   - handleValidationException(MethodArgumentNotValidException): ResponseEntity<ErrorResponse>
+   - handleMethodArgumentNotValidException(MethodArgumentNotValidException): ResponseEntity<ErrorResponse>
+     - Logic: Transform Spring validation errors to business ErrorResponse format
+     - Returns: HTTP 400 with detailed validation error information
    - handleDataIntegrityViolation(DataIntegrityViolationException): ResponseEntity<ErrorResponse>
    - handleGenericException(Exception): ResponseEntity<ErrorResponse>
 4. Annotations:
@@ -361,10 +423,9 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - Controllers use @RestController, @RequestMapping, @PostMapping and other Spring MVC annotations
    - Service classes use @Service, @Transactional annotations
    - Data access layers use @Repository annotation
-   - Validation uses @Valid, @NotNull, @Size, @Pattern and other Bean Validation annotations
+   - Validation uses @Valid, @NotNull, @Size, @Pattern and other spring-boot-starter-validation annotations
 
 2. Dependency Injection:
-   - Use @Autowired or constructor injection
    - Prefer constructor injection to ensure dependency immutability
    - Avoid circular dependencies
 
