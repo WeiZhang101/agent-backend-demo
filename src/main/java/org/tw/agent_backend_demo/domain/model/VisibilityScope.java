@@ -11,6 +11,8 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import java.util.List;
 
 /**
@@ -25,10 +27,11 @@ import java.util.List;
 public class VisibilityScope {
     
     /**
-     * Scope type - either "organization" or "personnel"
+     * Scope type - either ORGANIZATION or PERSONNEL
      */
+    @Enumerated(EnumType.STRING)
     @Column(name = "visibility_type")
-    private String type;
+    private ScopeType type;
     
     /**
      * List of specific organizations or personnel identifiers
@@ -40,12 +43,13 @@ public class VisibilityScope {
     
     /**
      * Validates the visibility scope configuration.
+     * Focuses on validating values list since enum ensures type validity.
      * 
-     * @throws org.tw.agent_backend_demo.exception.InvalidVisibilityScopeException if the scope type is invalid
+     * @throws org.tw.agent_backend_demo.exception.InvalidVisibilityScopeException if the scope values are invalid
      */
     public void validateScope() {
-        if (type == null || (!type.equals("organization") && !type.equals("personnel"))) {
-            throw new org.tw.agent_backend_demo.exception.InvalidVisibilityScopeException("Invalid visibility scope type: " + type);
+        if (type == null) {
+            throw new org.tw.agent_backend_demo.exception.InvalidVisibilityScopeException("Visibility scope type cannot be null");
         }
         
         if (values == null || values.isEmpty()) {

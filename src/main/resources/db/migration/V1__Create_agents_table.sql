@@ -7,7 +7,7 @@ CREATE TABLE agents (
     description VARCHAR(500) NOT NULL,
     category VARCHAR(100) NOT NULL,
     target_system_url TEXT NOT NULL,
-    visibility_type VARCHAR(20) NOT NULL CHECK (visibility_type IN ('organization', 'personnel')),
+    visibility_type VARCHAR(20) NOT NULL CHECK (visibility_type IN ('ORGANIZATION', 'PERSONNEL')),
     creator VARCHAR(100) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

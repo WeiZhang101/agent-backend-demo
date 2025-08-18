@@ -40,9 +40,15 @@ class AgentPO {
 }
 
 class VisibilityScope {
-    +String type
+    +ScopeType type
     +List~String~ values
     +validateScope()
+}
+
+class ScopeType {
+    <<enumeration>>
+    ORGANIZATION
+    PERSONNEL
 }
 
 class CreateAgentRequest {
@@ -108,6 +114,7 @@ class ErrorResponse {
 
 Agent "1" -- "1" VisibilityScope : contains
 AgentPO "1" -- "1" VisibilityScope : contains
+VisibilityScope "1" -- "1" ScopeType : uses
 CreateAgentRequest --> Agent : converts to
 Agent --> AgentPO : converts to
 AgentPO --> Agent : converts to
@@ -184,7 +191,7 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - description: String - Description information, required, 500 character limit
    - category: String - Category, required, validates against predefined list
    - targetSystemUrl: String - Target system URL, required, requires URL format validation
-   - visibilityScope: VisibilityScope - Visibility scope, required
+   - visibilityScope: VisibilityScope - Visibility scope with ScopeType enum, required
    - creator: String - Creator, automatically populated by system
    - createdAt: LocalDateTime - Creation time, automatically populated by system
 3. Methods:
@@ -213,7 +220,7 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - description: String - Description information
    - category: String - Category
    - targetSystemUrl: String - Target system URL
-   - visibilityScope: VisibilityScope - Visibility scope
+   - visibilityScope: VisibilityScope - Visibility scope (with ScopeType enum)
    - creator: String - Creator, automatically populated by system
    - createdAt: LocalDateTime - Creation time, automatically populated by system
 3. Methods:
@@ -228,15 +235,26 @@ InvalidUrlFormatException --> ErrorResponse : maps to
    - @Id, @GeneratedValue(strategy = GenerationType.AUTO)
    - @Column(nullable = false, unique = true) for agentName
 
+### Create Enum - ScopeType
+1. Responsibilities: Define allowed visibility scope types
+2. Values:
+   - ORGANIZATION - Scope limited to specific organizations
+   - PERSONNEL - Scope limited to specific personnel/users
+3. Annotations:
+   - Standard Java enum
+
 ### Create Value Object - VisibilityScope
 1. Responsibilities: Encapsulate visibility scope configuration information
 2. Properties:
-   - type: String - Scope type (organization or personnel)
-   - values: List<String> - Specific list of organizations or personnel
+   - type: ScopeType - Scope type enum (ORGANIZATION or PERSONNEL)
+   - values: List<String> - Specific list of organizations or personnel identifiers
 3. Methods:
    - validateScope(): void
-     - Logic: Validate if type is valid
+     - Logic: Validate if values list is not null and not empty
      - Exception: Throw InvalidVisibilityScopeException if invalid
+4. Design notes:
+   - Type safety is ensured by using ScopeType enum instead of String
+   - Validation focuses on values list since enum ensures type validity
 
 ### Create Request DTO - CreateAgentRequest
 1. Responsibilities: Encapsulate parameters for Agent creation requests
