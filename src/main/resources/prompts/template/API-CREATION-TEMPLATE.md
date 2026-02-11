@@ -1,7 +1,7 @@
 ## Requirements
 Implement an API endpoint for creating new `[entity name]`.
 
-## Business Model(mermaid)
+## Entities(mermaid)
 ```
 classDiagram
 direction TB
@@ -31,7 +31,7 @@ direction TB
     [RequestClass] "1" -- "1" [EntityClass] : creates
 ```
 
-## Solution
+## Approach
 1. API Design:
     - Create POST endpoint `/api/v1/[entityNamePlural]` for creating new [Entity Name]
     - Return appropriate HTTP status codes for success and error cases
@@ -106,7 +106,7 @@ direction TB
 2. [EntityClass]ServiceImpl calls [EntityClass]Repository
 3. [EntityClass]RepositoryImpl calls [EntityClass]DAO
 
-## Tasks
+## Operations
 
 ### Create Business Exception Classes
 1. Create [EntityName]AlreadyExistsException class:
@@ -264,7 +264,7 @@ direction TB
 2. Add method: save(String key, String resourceId): void
 3. Add method: findByKey(String key): Optional<String>
 
-## Common Tasks
+## Norms
 1. All repository implementation classes should be annotated with @Repository
 2. All Repository classes should implement JPA repository
 3. All Service classes should be annotated with @Service
@@ -277,7 +277,7 @@ direction TB
 10. Service layer should throw business exceptions for validation failures and business rule violations
 11. Controllers should not handle exceptions directly - delegate to GlobalExceptionHandler
 
-## Constraints
+## Safeguards
 - If request body is missing required fields, return 400 Bad Request
 - After successful creation, return 201 Created status code
 - If resource already exists, throw [EntityName]AlreadyExistsException (409 Conflict)
