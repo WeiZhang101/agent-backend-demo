@@ -1,7 +1,7 @@
 ## Requirements
 Implement an API endpoint for querying `[entity name]`.
 
-## Business Model(mermaid)
+## Entities(mermaid)
 ```
 classDiagram
 direction TB
@@ -33,7 +33,7 @@ direction TB
     [EntityClass] "n" -- "1" Paged[EntityClass]Response : contains
 ```
 
-## Solution
+## Approach
 1. API Design:
     - Create GET endpoint `/api/v1/[entityNamePlural]` for retrieving [Entity Name] by criteria
     - [If retrieval by IDs is needed] Create GET endpoint `/api/v1/[entityNamePlural]/ids` for retrieving [Entity Name] by IDs
@@ -54,7 +54,7 @@ direction TB
 2. [EntityClass]ServiceImpl calls [EntityClass]Repository
 3. [EntityClass]RepositoryImpl calls [EntityClass]DAO
 
-## Tasks
+## Operations
 
 ### Create [EntityClass]QueryParams class
 1. Attributes:
@@ -180,14 +180,14 @@ direction TB
 ### Update [EntityClass]DAO interface to add retrieval methods
 1. Extend JpaSpecificationExecutor<[EntityClass]PO>
 
-## Common Tasks
+## Norms
 1. All repository implementation classes should be annotated with @Repository
 2. All Repository classes should implement JPA repository
 3. All Service classes should be annotated with @Service
 4. All Controller classes should be annotated with @RestController
 5. All DTO and model classes should be annotated with @Data
 
-## Constraints
+## Safeguards
 - If query parameters are invalid (e.g., negative page or invalid sortBy/sortDirection values), return 400 Bad Request
 - If no records match the criteria, return an empty list
 - Default page is 0 if not specified
