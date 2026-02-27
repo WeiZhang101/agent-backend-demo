@@ -48,15 +48,15 @@ Generate structured development context for a requirement using Aupro MCP tools,
       Examples: `GGQPA-169-202511271630-[Feat]-api-assignment-mismatch.md`
 
    b. **Create directory and write file**:
-      - Ensure directory `aupro/prompt/` exists under the project root (create if not)
-      - Write the complete structured implementation prompt to `aupro/prompt/<file-name>.md`
+      - Ensure directory `resources/aupro/prompt/` exists under the project root (create if not)
+      - Write the complete structured implementation prompt to `resources/aupro/prompt/<file-name>.md`
 
    c. **Show the saved file path** to the user:
-      > "Structured prompt saved to `aupro/prompt/<file-name>.md`"
+      > "Structured prompt saved to `resources/aupro/prompt/<file-name>.md`"
 
 **Output**
 
-The structured implementation prompt (saved to `aupro/prompt/<file-name>.md`), then implementation upon confirmation.
+The structured implementation prompt (saved to `resources/aupro/prompt/<file-name>.md`), then implementation upon confirmation.
 
 **Guardrails**
 - Do NOT skip calling the Aupro context_generation tool — it provides project-specific memories and framework
@@ -66,4 +66,4 @@ The structured implementation prompt (saved to `aupro/prompt/<file-name>.md`), t
 - Always use the actual workspace root for `projectAbsolutePath`
 - File name MUST follow SPDD naming convention defined above
 - Use `GGQPA-XXX` if JIRA ticket number is unknown
-- Always create `aupro/prompt/` directory if it does not exist
+- Always create `resources/aupro/prompt/` directory if it does not exist
