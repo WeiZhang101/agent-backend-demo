@@ -1,0 +1,11 @@
+team:
+    id: ea90b44c-6cd4-4ec5-a040-2d77c469b4b8
+    name: Backend Development
+    description: Backend development team responsible for building and maintaining the Spring Boot REST API application, including API endpoints, database integration with PostgreSQL/JPA, and database migrations with Flyway.
+project:
+    id: 4b9106e8-0a4a-4256-8572-c522c8941982
+    name: Agent Backend Demo
+    type: web application
+    tech_stack: Java 21, Spring Boot 3.5.0, Spring Data JPA, PostgreSQL, H2, Flyway, Lombok, Docker, Gradle
+    architecture: Three-Tier Architecture, MVC
+    description: A Spring Boot-based backend demonstration project showcasing best practices for modern Java web applications with JPA data access and database migration support.
