@@ -57,11 +57,10 @@ spring:
 ```yml
 spring:
   datasource:
-    postgres:
-      url: jdbc:postgresql://localhost:5432/agent-backend
-      username: postgres
-      password: postgres
-      driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/agent-backend
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
 ```
 
 - add JPA configuration in application.yaml

@@ -24,7 +24,12 @@ Generate structured development context for a requirement using Aupro MCP tools,
    - `projectAbsolutePath`: the workspace root path
    - `user_message`: the user's requirement (translated to English if needed)
 
-   **IMPORTANT**: The requirement passed to `user_message` MUST be in English. If the user provides it in another language, translate it to English first.
+   **IMPORTANT**:
+   - The requirement passed to `user_message` MUST be in English. If the user provides it in another language, translate it to English first.
+   - **DO NOT summarize or condense the requirement.** Pass the FULL original content.
+   - If a file is referenced (e.g., `@requirements/xxx.md`), read the complete file content and pass it verbatim to `user_message`.
+   - Preserve ALL details including: Acceptance Criteria, error messages, Given/When/Then scenarios, JSON examples, etc.
+   - **Exception**: Only summarize if the content exceeds 2000 characters. In this case, prioritize preserving Acceptance Criteria and exact error messages.
 
 3. **Follow the Aupro tool's returned instructions**
 
@@ -48,15 +53,15 @@ Generate structured development context for a requirement using Aupro MCP tools,
       Examples: `GGQPA-169-202511271630-[Feat]-api-assignment-mismatch.md`
 
    b. **Create directory and write file**:
-      - Ensure directory `resources/aupro/prompt/` exists under the project root (create if not)
-      - Write the complete structured implementation prompt to `resources/aupro/prompt/<file-name>.md`
+      - Ensure directory `aupro/prompt/` exists under the project root (create if not)
+      - Write the complete structured implementation prompt to `aupro/prompt/<file-name>.md`
 
    c. **Show the saved file path** to the user:
-      > "Structured prompt saved to `resources/aupro/prompt/<file-name>.md`"
+      > "Structured prompt saved to `aupro/prompt/<file-name>.md`"
 
 **Output**
 
-The structured implementation prompt (saved to `resources/aupro/prompt/<file-name>.md`), then implementation upon confirmation.
+The structured implementation prompt (saved to `aupro/prompt/<file-name>.md`), then implementation upon confirmation.
 
 **Guardrails**
 - Do NOT skip calling the Aupro context_generation tool — it provides project-specific memories and framework
@@ -66,4 +71,5 @@ The structured implementation prompt (saved to `resources/aupro/prompt/<file-nam
 - Always use the actual workspace root for `projectAbsolutePath`
 - File name MUST follow SPDD naming convention defined above
 - Use `GGQPA-XXX` if JIRA ticket number is unknown
-- Always create `resources/aupro/prompt/` directory if it does not exist
+- Always create `aupro/prompt/` directory if it does not exist
+- **NEVER summarize, condense, or paraphrase the requirement content** — pass the complete original text to the Aupro tool (only exception: content exceeds 2000 characters)
